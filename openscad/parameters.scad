@@ -26,6 +26,7 @@ dz = 0.5; //thickness before a bridge is printable-on
 xy_travel = xy_lever * flex_a; //max. travel in X or Y
 xy_bottom_travel = xy_travel * xy_stage_reduction; //travel of bottom of XY stage
 xy_actuator_pivot_w = 25; //width of the hinge for the actuating lever
+actuator_h = 26; //height of actuator columns (~screw length)
 
 pushstick = [5,38,5]; //cross-section of XY "push stick"
 pw = pushstick[0]; //because this is used in a lot of places...

@@ -160,6 +160,11 @@ module mechanism_void(){
         }
     }
 }
+module inter_shelf_spaghetti_slots(){
+    // cut outs to clear "spaghetti" from inside of stage
+    translate([0,0,shelf_z2-2]) cube([999,10,3],center=true);
+    translate([0,0,shelf_z2-2]) cube([10,999,3],center=true);
+}
 
 module casing_outline(cubic=true){
     // Once the mechanism void is subtracted, this makes a minimal wall around the structure.
@@ -189,9 +194,9 @@ module fixed_platform(){
     difference(){
         hull(){
             //"shelf" part overhanging the edge
-            rotate(-135) translate([-fixed_platform[0]/2,so,platform_z]) mirror([0,0,1]){
-                cube(fixed_platform);
-                cube([fixed_platform[0], d, fixed_platform[1]+fixed_platform[2]]);
+            rotate(-135) translate([0,so,platform_z]) mirror([0,0,1]){
+                translate([-fixed_platform[0]/2,0,0]) cube(fixed_platform);
+                translate([-d,0,0]) cube([2*d, d, fixed_platform[1]+fixed_platform[2]]);
             }
             //"bridge" part 
             #translate([0,0,casing_top-d]) 
@@ -213,6 +218,7 @@ module fixed_platform(){
                 repeat([0,10,0],10) cylinder(r=3/2*0.9,h=20,center=true);
             translate([0,0,0.5]) mechanism_void();
         }
+        inter_shelf_spaghetti_slots(); //access ports for print clean-up
     }
 }
 //fixed_platform();
@@ -278,11 +284,9 @@ module casing(mechanism_void=true){
             translate([0,z_actuator_pivot_y,0]) actuator_shroud_core(z_pushstick_z+pushstick[2]+1, z_actuator_pivot_w, pw, z_lever*z_reduction, tilted=false, extend_back=flex_a*(z_pushstick_z+pushstick[2]+1)+0.5, anchor=true);
             //clearance for the Z pushstick
             translate([-pw/2-1.5,0,z_pushstick_z-3]) cube([pw+3,z_actuator_pivot_y+d, pushstick[2]+3+3]);
-            }
+        }
         
-        // cut outs to clear "spaghetti" from inside of stage
-        translate([0,0,shelf_z2-2]) cube([999,10,3],center=true);
-        translate([0,0,shelf_z2-2]) cube([10,999,3],center=true);
+        inter_shelf_spaghetti_slots(); //access ports to clean up poor bridging inside
     }
 }
 
@@ -452,7 +456,7 @@ module base(){
 }
 
 difference(){
-    //main_body();
+    main_body();
     //rotate([0,90,0]) cylinder(r=999,h=999,$fn=8);
 }
 
