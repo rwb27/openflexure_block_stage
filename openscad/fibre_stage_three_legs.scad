@@ -156,7 +156,7 @@ module mechanism_void(){
             w = 2*(z_actuator_pivot_y - pushstick[0]/sqrt(2) - xy_bottom_travel*sqrt(2)) - 1;
             //w = z_actuator_pivot_w;
             translate([-w/2,0,-d]) cube([w, wall_t, shelf_z2]);
-            translate([-w/2 + 6,0,-d]) cube([w-6*2, wall_t+6, shelf_z2]);
+            translate([-w/2 + 8,0,-d]) cube([w-8*2, wall_t+6, shelf_z2]);
         }
     }
 }
@@ -342,7 +342,7 @@ module main_body(){
     
     // Casing (also provides a lot of the structural integrity)
     casing();
-    fixed_platform();
+    //fixed_platform();
         
     
 }//*/
