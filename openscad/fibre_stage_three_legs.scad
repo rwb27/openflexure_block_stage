@@ -372,26 +372,6 @@ module thick_section(h, z=0, center=false){
         translate([0,0,-z]) children();
     }
 } 
-module band_attachment_ladder(length, N=4){
-    // a cutout from the bottom of an object to allow elastic bands to be
-    // hooked in, to set the tension
-    w = pw+3; //outer width
-    iw = w-7;
-    l = length; //overall length
-    h = 3; //height
-    period = l/N;
-    
-    difference(){
-        translate([-w/2,0,-d]) cube([w,l,h+d]); //overall size
-        
-        repeat([0,period,0], ceil(length/period))hull(){
-            translate([-iw/2-1,2,-2*d]) cube([iw+2,2,d]);
-            translate([-iw/2,3,h]) cube([iw,2,d]);
-            translate([-iw/2-0.5,period+d,-2*d]) cube([iw+1,d,d]);
-            translate([-iw/2,period+d,h]) cube([iw,d,d]);
-        }
-    }
-}
 
 module base(){
     // This isn't beautiful, but lifts the mechanism off the floor. Needs somehwere for the elastic bands though.
@@ -406,29 +386,32 @@ module base(){
         union(){
             
             thick_section(h, z=d) casing();
-            thick_section(h-t, z=d) casing(mechanism_void=false);   
+            thick_section(0.75, z=d) casing(mechanism_void=false);   
             
             //properly tilted actuator columns
             each_pushstick() translate([0,xy_nut_y,h]) intersection(){
                 mirror([0,0,1]) cylinder(r=999,h=h,$fn=8);
                 rotate([tilt,0,0]) actuator_core_bottom(999, expand=wall_t*2, center=true);
             }
+            //solid Z actuator column
+            translate([0,z_nut_y,0]) actuator_core_bottom(h, expand=wall_t*2);
                 
         }
         // remove the unnecessary thick floor from the box
         translate([0,0,0.75]) thick_section(999) mechanism_void();
         // cut-outs for elastic bands/springs
         each_pushstick() translate([0,xy_nut_y+h*tan(tilt),0]) union(){
+            // holes either side of the actuator, for elastic band insertion
             difference(){
                 rotate([tilt,0,0]) actuator_core_bottom(999,center=true);
                 cube([pw+3,999,(h-t)*2],center=true);
             }
-            hull(){//elastic band slot
-                cube([pw+5,3,2*d],center=true);
-                translate([0,0,h-t-1-d]) cube([pw+5,5,2*d],center=true);
+            //elastic band slot (with rounded edges to equalise tension/avoid tearing)
+            rotate([tilt,0,0]) skew_flat(tilt) translate([0,0,0]){
+                filleted_bridge([2*column_base_radius()+1.5, 3, 2.5], roc_xy=4, roc_xz=3, $fn=16);
             }
-            translate([0,-39,0]) band_attachment_ladder(35);
-            // remember to cut the inside wall so the colum can
+        
+            // remember to cut the inside wall so the column can
             // move downwards:
             translate([0,-10,h]) cube([7+3,20,2*t-d],center=true);
             
@@ -441,23 +424,27 @@ module base(){
             }
         }
         translate([0,z_nut_y,0]) union(){
+            // holes either side of the actuator, for elastic band insertion
             difference(){
                 translate([0,0,h]) actuator_core_bottom(999,center=true);
                 cube([pw+3,999,(h-t)*2],center=true);
             }
-            hull(){//elastic band slot
-                cube([pw+5,3,2*d],center=true);
-                translate([0,0,h-t-1-d]) cube([pw+5,5,2*d] ,center=true);
+            //elastic band slot (with rounded edges to equalise tension/avoid tearing)
+            translate([0,0,0]){
+                filleted_bridge([2*column_base_radius()+1.5, 3, 2], roc_xy=4, roc_xz=3, $fn=16);
             }
-            translate([0,-42,0]) band_attachment_ladder(38);
+        
+            // remember to cut the inside wall so the column can
+            // move downwards:
+            translate([0,-10,h]) cube([7+3,20,2*t-d],center=true);
         }
     }
         
 }
 
 difference(){
-    main_body();
+    //main_body();
     //rotate([0,90,0]) cylinder(r=999,h=999,$fn=8);
 }
 
-//base();
+base();
