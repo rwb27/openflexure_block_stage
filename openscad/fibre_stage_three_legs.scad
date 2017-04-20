@@ -226,12 +226,35 @@ module fixed_platform(){
 module moving_platform(){
     // extension to the stage to make it bigger and match fixed platform
     // (not finished)
-    shelf_bottom = shelf_z2+2*dz;
-    h = platform_z - shelf_bottom;
-    intersection(){
+    stage_top = shelf_z2 + stage[2];
+    h = platform_z - stage_top;
+    so = fixed_platform_standoff;
+    start_y = -so+xy_travel*sqrt(2);
+    p = fixed_platform;
+    dr = h - p[2]; //amount to move in from top to bottom, for the overhanging sides.
+    echo("Platform height is", platform_z);
+    difference(){
         hull(){
-            translate([0,0,shelf_bottom+d]) cube([stage[0],stage[1],2*d],center=true); //the bottom of the stage
-            translate([0,0,platform_z-d]) cube([stage[0],stage[1]+2*h,2*d],center=true); //the bottom of the stage
+            //top of the platform
+            rotate(45) translate([-p[0]/2,start_y,platform_z - p[2]]) cube(p);
+            //bottom of the platform (with 45 degree overhang)
+            rotate(45) translate([-p[0]/2+dr,start_y,stage_top]) cube(p-[2,1,0]*dr);
+        }
+        //alignment groove (compatible with standard objective mounts)
+        translate([0,0,platform_z]) rotate(-135) cube([3,999,1.7*2],center=true);
+        //mounting holes (compatible with standard mounts)
+        // NB we leave the bottom closed if it's over the void
+        // to avoid messing up the bridge
+        rotate(45) translate([0,start_y+5,platform_z]) 
+            repeat([40,0,0],2,center=true)
+            repeat([0,10,0],10) cylinder(r=3/2*0.9,h=20,center=true);
+        
+        //mounting holes in the moving stage
+        translate([0,0,stage_top + 1])
+            repeat([10,0,0],4,center=true)
+            repeat([0,10,0],2,center=true){
+                cylinder(d=3*1.15,h=999, center=true);
+                cylinder(d=2*3*1.15,h=999);
         }
     }
             
@@ -382,6 +405,7 @@ module base(){
     core = column_core_size();
     h = t + 4;
     band = [11, 4, 2.5*2];
+    echo("base height is ",h);
     difference(){
         union(){
             
