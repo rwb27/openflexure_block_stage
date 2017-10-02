@@ -471,4 +471,4 @@ difference(){
     //rotate([0,90,0]) cylinder(r=999,h=999,$fn=8);
 }
 
-base();
+//base();
