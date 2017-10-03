@@ -385,11 +385,6 @@ module slide_support(){
     }
 }
 
-module actuator_core_bottom(h=4, expand=0, center=false){
-    core = column_core_size();
-    resize(core+[expand, expand, h]) cylinder(r=core[0]/2,h=4,$fn=32, center=center);
-}
-
 module thick_section(h, z=0, center=false){
     linear_extrude(h, center=center) #projection(cut=true){
         translate([0,0,-z]) children();
@@ -408,17 +403,17 @@ module base(){
     echo("base height is ",h);
     difference(){
         union(){
-            
+            // start off by extruding the bottom of the casing to make a bucket
             thick_section(h, z=d) casing();
             thick_section(0.75, z=d) casing(mechanism_void=false);   
             
-            //properly tilted actuator columns
+            //add in properly tilted actuator columns
             each_pushstick() translate([0,xy_nut_y,h]) intersection(){
                 mirror([0,0,1]) cylinder(r=999,h=h,$fn=8);
-                rotate([tilt,0,0]) actuator_core_bottom(999, expand=wall_t*2, center=true);
+                rotate([tilt,0,0]) screw_seat_outline(999, center=true);
             }
-            //solid Z actuator column
-            translate([0,z_nut_y,0]) actuator_core_bottom(h, expand=wall_t*2);
+            //include a solid Z actuator column
+            translate([0,z_nut_y,0]) screw_seat_outline(h);
                 
         }
         // remove the unnecessary thick floor from the box
@@ -427,15 +422,15 @@ module base(){
         each_pushstick() translate([0,xy_nut_y+h*tan(tilt),0]) union(){
             // holes either side of the actuator, for elastic band insertion
             difference(){
-                rotate([tilt,0,0]) actuator_core_bottom(999,center=true);
-                cube([pw+3,999,(h-t)*2],center=true);
+                nut_seat_void(99, tilt=tilt, center=true); // space inside the column
+                cube([pw+3,999,(h-t)*2],center=true); // elastic band mount
             }
             //elastic band slot (with rounded edges to equalise tension/avoid tearing)
             rotate([tilt,0,0]) skew_flat(tilt) translate([0,0,0]){
                 filleted_bridge([2*column_base_radius()+1.5, 3, 2.5], roc_xy=4, roc_xz=3, $fn=16);
             }
         
-            // remember to cut the inside wall so the column can
+            // cut the inside wall so the column can
             // move downwards:
             translate([0,-10,h]) cube([7+3,20,2*t-d],center=true);
             
@@ -444,13 +439,13 @@ module base(){
             // vertically)
             rotate([tilt,0,0]) difference(){
                 translate([-99,0,-99]) cube(999);
-                actuator_core_bottom(999,expand=2*wall_t+d,center=true);
+                screw_seat_outline(999,adjustment=d,center=true);
             }
         }
         translate([0,z_nut_y,0]) union(){
             // holes either side of the actuator, for elastic band insertion
             difference(){
-                translate([0,0,h]) actuator_core_bottom(999,center=true);
+                translate([0,0,-d]) nut_seat_void(99,center=true);
                 cube([pw+3,999,(h-t)*2],center=true);
             }
             //elastic band slot (with rounded edges to equalise tension/avoid tearing)
@@ -463,7 +458,6 @@ module base(){
             translate([0,-10,h]) cube([7+3,20,2*t-d],center=true);
         }
     }
-        
 }
 
 difference(){
