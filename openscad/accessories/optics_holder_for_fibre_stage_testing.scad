@@ -1,9 +1,10 @@
-include <microscope_parameters.scad>;
 use <dovetail.scad>;
 use <utilities.scad>;
-
+objective_clip_w = 10;
+objective_clip_y = 6;
 clip_outer_w = objective_clip_w + 4;
 h = 11.5;
+d = 0.05;
 
 //Centre of mounting holes to centre of mounting holes on static part is
 // stage[1]/2 + z_lever + zflex[1]+4 (in the +y direction)
