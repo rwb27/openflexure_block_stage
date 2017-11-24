@@ -1,10 +1,12 @@
 # OpenFlexure Block Stage
 A 3D Printable high-precision 3 axis translation stage.
 
-This project is a 3D printable design that enables very fine (sub-micron) mechanical positioning of a small moving stage, with surprisingly good mechanical stability.  It follows on from the [OpenFlexure Microscope](https://github.com/rwb27/openflexure_microscope) which is discussed in a [paper in Review of Scientific Instruments](http://dx.doi.org/10.1063/1.4941068) (open access).
+This project is a 3D printable design that enables very fine (sub-micron) mechanical positioning of a small moving stage, with surprisingly good mechanical stability.  It follows on from the [OpenFlexure Microscope](https://github.com/rwb27/openflexure_microscope) which is discussed in a [paper in Review of Scientific Instruments](http://dx.doi.org/10.1063/1.4941068) (open access).  Currently, it's designed to function as a more-or-less drop in replacement for fibre alignment stages available from various scientific suppliers, but the project aims to be useful to electrophysiologists, nanotechnology folk, and many more.
+
+![An assembled block stage](docs/images/block_stage_assembled.jpg)
 
 ## Kits and License
-This project is open-source and is released under the CERN open hardware license.  You can buy a kit of the microscope from [WaterScope](http://www.waterscope.org/).  Currently, only microscope kits are listed, but if you send an email it should be possible to get this stage as a custom order.
+This project is open-source and is released under the CERN open hardware license.  You can buy a kit of the openflexure microscope from [WaterScope](http://www.waterscope.org/).  Currently, only microscope kits are listed, but if you send an email it should be possible to get this stage as a custom order.
 
 ## Printing/building it yourself
 To build the stage, download the [STL files](./stl/) and print them.  Don't just print everything from the STL folder,
