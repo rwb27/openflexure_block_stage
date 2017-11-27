@@ -11,7 +11,6 @@ one moving stage, rather than separating XY and Z.
 */
 use <utilities.scad>;
 use <compact_nut_seat.scad>;
-use <dovetail.scad>;
 include <parameters.scad>;
 
 
@@ -78,58 +77,6 @@ module pushstick(){
 module each_pushstick(){
     // Transformation that creates two pushsticks at 45 degrees
     reflect([1,0,0]) rotate(45) translate([0,pw/2,0]) children();
-}
-
-module z_base(){
-    // Trapezoid that forms the base of the Z stage
-    t = xy_bottom_travel;
-    w = z_stage_base_w;
-    hull(){
-        translate([-pw,-pw-t,0]) cube([2*pw,d,d]); // inner edge
-        translate([-w/2, -stage[1]/2-t, 0]) cube([w, d, d]);
-        translate([-w/2, z_stage_base_y, 0]) cube([w, d, d]);
-    }
-}
-
-module z_stage(){
-    // This is the part that moves in Z only, connected to the middle
-    // "shelf" of the XY table
-    // The triangular base of this part must fit between the 
-    // pushsticks for the XY motion, which constrains the tip position
-    // and also means we must bring the sides out at 45 degrees.
-    difference(){
-        sequential_hull(){
-            z_base();
-            translate([0,0,stage[2]]) z_base();
-            translate([0,0,shelf_z1 + stage[2]/2]) cube(stage,center=true);
-        }
-        
-        // clearance for Z pushstick (see below)
-        translate([-pw/2-1.5, -99, z_pushstick_z - 2 - z_travel]){
-            cube([pw+3, 999, pushstick[2]+3.5+2*z_travel]);
-        }
-    }
-    // Join the stage to the anchor with some flexures at the bottom
-    reflect([1,0,0]) translate([-z_stage_base_w/2,z_anchor_bottom_y-d,0])
-        cube([zflex[0], z_lever + zflex[1]+2*d, zflex[2]]);
-    translate([-z_stage_base_w/2,z_anchor_bottom_y+zflex[1],0])
-        cube([z_stage_base_w, z_lever - zflex[1], pushstick[2]]);
-    // And more flexures at the top
-    reflect([1,0,0]) translate([-stage[0]/2,-stage[1]/2,shelf_z1]) mirror([0,1,0]){
-        translate([0,-d,0]) cube([zflex[0], z_lever + zflex[1]+2*d, zflex[2]]);
-        translate([0,zflex[1],dz]) cube([stage[0]/2+d,z_lever - zflex[1], stage[2]-dz]);
-    }
-    // The actuating "pushstick" attaches to this lever
-    hull(){
-        translate([-pw/2, z_stage_base_y - z_lever, 0]) cube([pw, z_lever - zflex[1], stage[3]]);
-        translate([-pw/2, z_stage_base_y - 3 - zflex[1], 0]) cube([pw, 3, shelf_z1 - 3]);
-    }
-    // This is the actuating "pushstick"
-    translate([-pw/2, z_stage_base_y, z_pushstick_z]){
-        l = z_actuator_pivot_y - z_stage_base_y;
-        cube([pw, l, pushstick[2]]);
-        translate([0,-zflex[1]-d,0]) cube([pw, l + 2*zflex[1] + d, zflex[2]]);
-    }
 }
 
 module mechanism_void(){
@@ -313,63 +260,6 @@ module casing(mechanism_void=true){
     }
 }
 
-// Overall structure
-module main_body(){
-    difference(){
-        union(){
-            xy_table();
-        }
-        
-        // cutouts for pushsticks
-        each_pushstick() hull() {
-            h=stage[2]*2+z_travel*2;
-            translate([0,2*d,0]) cube([pw, d, h], center=true);
-            translate([0,0.5,0]) cube([pw+1.5, d, h], center=true);
-            translate([0, pushstick[1], 0]) cube([pw+1+2*xy_bottom_travel*sqrt(2), d, h], center=true);
-            translate([0, pushstick[1], 0]) cube([d, d, h + pw+1+2*xy_bottom_travel*sqrt(2)], center=true);
-            translate([99, 98, 0]) cube([d, d, h + pw+1+2*xy_bottom_travel*sqrt(2)], center=true); //cut out between the pushsticks
-        }
-        
-        // cutout for Z stage
-        hull(){
-            h=stage[2]*2+z_travel*2;
-            w = stage[0] - 2*zflex[1];
-            translate([0, -pw, 0]) cube([2*pw,d,h],center=true);
-            translate([0, -stage[1]/2, 0]) cube([w,2*d,h],center=true);
-        }
-        
-        // mounting holes on top
-        repeat([10,0,0],4,center=true)
-            repeat([0,10,0],2,center=true)
-            translate([0,0,shelf_z2 + 1.5]) cylinder(d=3*0.95,h=999);
-            // NB the z position must clear the bottom of the stage
-            // (which is 1mm above shelf_z2) or we get errors on the
-            // bridge.
-    }
-    // XY pushsticks and actuators
-    each_pushstick(){
-        pushstick();
-        translate([0,pushstick[1] - zflex[1],0]) tilted_actuator(shelf_z1, xy_actuator_pivot_w, xy_lever * xy_reduction, base_w = pw);
-    }
-    
-    // Z stage (the part that moves only in Z) and actuator
-    z_stage();
-    translate([0,z_actuator_pivot_y,0]){
-        untilted_actuator(z_pushstick_z, z_actuator_pivot_w, z_lever * z_reduction);
-    }
-    //reinforcement through the void in the centre
-    reflect([1,0,0]) translate([0,0,pushstick[2] + 4 + z_travel]) hull(){
-        translate([pw/2+3, z_actuator_pivot_y - wall_t, 0]) cube([4,d,4]);
-        translate([stage[0]/2 + zflex[0] + zflex[1] + xy_bottom_travel, -stage[1]/2,0]) cube([0.5,4,4]);
-    }
-    
-    // Casing (also provides a lot of the structural integrity)
-    casing();
-    fixed_platform();
-        
-    
-}//*/
-
 module slide_support(){
     // This piece screws diagonally onto the moving part to 
     // support a vertical microscope slide for tracking experiments
@@ -386,82 +276,10 @@ module slide_support(){
 }
 
 module thick_section(h, z=0, center=false){
-    linear_extrude(h, center=center) #projection(cut=true){
+    linear_extrude(h, center=center) projection(cut=true){
         translate([0,0,-z]) children();
     }
 } 
-
-module base(h=base_height){
-    // This isn't beautiful, but lifts the mechanism off the floor and anchors elastic bands
-    tilt = -asin(xy_stage_reduction/xy_reduction); // X/Y actuators are not vertical
-    xy_a_travel = xy_travel*xy_reduction*cos(tilt); // (Vertical) travel of X/Y actuators
-    z_a_travel = z_travel*z_reduction; // Travel of Z actuator
-    xy_nut_y = pushstick[1]+xy_lever*xy_reduction*cos(tilt); // centre of actuator columns
-    z_nut_y = z_actuator_pivot_y+zflex[1]+z_lever*z_reduction;
-    core = column_core_size();
-    // Check the base is being produced sufficiently high to accommodate the actuators
-    if(base_height < max_actuator_travel + 4) echo(str("WARNING: stage_height is too low, stage travel will be reduced! base height:",base_height," stage height:",stage_height," platform_z:",platform_z));
-        
-    band = [11, 4, 2.5*2]; // Viton band slot size
-    echo("base height is ",h);
-    difference(){
-        union(){
-            // start off by extruding the bottom of the casing to make a bucket
-            thick_section(h, z=d) casing();
-            thick_section(0.75, z=d) casing(mechanism_void=false);   
-            
-            //add in properly tilted actuator columns
-            each_pushstick() translate([0,xy_nut_y,h]) intersection(){
-                mirror([0,0,1]) cylinder(r=999,h=h,$fn=8);
-                rotate([tilt,0,0]) screw_seat_outline(999, center=true);
-            }
-            //include a solid Z actuator column
-            translate([0,z_nut_y,0]) screw_seat_outline(h);
-                
-        }
-        // remove the unnecessary thick floor from the box
-        translate([0,0,0.75]) thick_section(999) mechanism_void();
-        // cut-outs for elastic bands/springs
-        each_pushstick() translate([0,xy_nut_y+h*tan(tilt),0]) union(){
-            // holes either side of the actuator, for elastic band insertion
-            difference(){
-                nut_seat_void(99, tilt=tilt, center=true); // space inside the column
-                cube([pw+3,999,(h-max_actuator_travel)*2],center=true); // elastic band mount
-            }
-            //elastic band slot (with rounded edges to equalise tension/avoid tearing)
-            rotate([tilt,0,0]) skew_flat(tilt) translate([0,0,0]){
-                filleted_bridge([2*column_base_radius()+1.5, 3, 2.5], roc_xy=4, roc_xz=3, $fn=16);
-            }
-        
-            // cut the inside wall so the column can
-            // move downwards:
-            translate([0,-10,h]) cube([7+3,20,2*max_actuator_travel-d],center=true);
-            
-            // cut the outside of the base to remove the excess material
-            // from the outer edge of the column (will have been extruded
-            // vertically)
-            rotate([tilt,0,0]) difference(){
-                translate([-99,0,-99]) cube(999);
-                screw_seat_outline(999,adjustment=d,center=true);
-            }
-        }
-        translate([0,z_nut_y,0]) union(){
-            // holes either side of the actuator, for elastic band insertion
-            difference(){
-                translate([0,0,-d]) nut_seat_void(99,center=true);
-                cube([pw+3,999,(h-max_actuator_travel)*2],center=true);
-            }
-            //elastic band slot (with rounded edges to equalise tension/avoid tearing)
-            translate([0,0,0]){
-                filleted_bridge([2*column_base_radius()+1.5, 3, 2], roc_xy=4, roc_xz=3, $fn=16);
-            }
-        
-            // remember to cut the inside wall so the column can
-            // move downwards:
-            translate([0,-10,h]) cube([7+3,20,2*max_actuator_travel-d],center=true);
-        }
-    }
-}
 
 difference(){
     //main_body();

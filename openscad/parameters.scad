@@ -20,6 +20,9 @@ z_reduction = 5; //mechanical reduction for Z
 // Motor lugs
 motor_lugs = true;
 
+// Mounting holes
+beam_between_holes = false; //set this to true to add extra mounting holes
+
 // Flexure dimensions - good for PLA and ~0.5mm nozzle
 zflex = [6, 1.5, 0.75]; //dimensions of flexure
 xflex = [5,5.5,5]; //default bounding box of x flexure
@@ -52,7 +55,14 @@ z_actuator_pivot_w = 20; //width of the hinge for the Z actuator lever
 z_pushstick_z = shelf_z1 - pw - 2.5; // height of the Z pushstick
 
 // Mounting stuff
-mounting_bolts = [[-1,0,0],[0,-1,0],[1,0,0]]*25*1*1.41; //bolt to the bench
+// By default, place 3 mounting holes to align the centre of the stage with a hole.
+// setting beam_between_holes adds another set of holes, putting the beam halfway between
+bolt_spacing = 25; // change to 25.4 for imperial tables
+mounting_bolts_alongholes = [[-1,0,0],[0,-1,0],[1,0,0]]*1.41; //beam aligned with holes
+mounting_bolts_betweenholes = [[-1.25,0.25,0],[1.25,-0.25,0],[0.25,-1.25,0]]*1.41;
+mounting_bolts = concat(mounting_bolts_alongholes, 
+            beam_between_holes?mounting_bolts_betweenholes:[]) * bolt_spacing;
+            
 platform_z = shelf_z2 + stage[2] + 7;
 fixed_platform_standoff = 10;
 fixed_platform = [50,40,4];
