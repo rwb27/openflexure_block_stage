@@ -21,7 +21,7 @@ z_reduction = 5; //mechanical reduction for Z
 motor_lugs = true;
 
 // Mounting holes
-beam_between_holes = false; //set this to true to add extra mounting holes
+beam_between_holes = true; //set this to true to add extra mounting holes
 
 // Flexure dimensions - good for PLA and ~0.5mm nozzle
 zflex = [6, 1.5, 0.75]; //dimensions of flexure
