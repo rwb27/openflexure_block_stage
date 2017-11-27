@@ -2,7 +2,11 @@
   Useful settings/parameters for the OpenFlexure fibre stage
 */
 version_numstring = "0.2.0";
-stage = [37,20,5]; //dimensions of stage part
+stage = [37,20,5]; // dimensions of stage part
+beam_height = 75; // height of beam above the table
+stage_height = beam_height - 12.5; //bottom of base to top surface of the stage 
+ // NB platform_z sets the distance from bottom of the body to top of the stage
+ // stage_height determines the thickness of the base.
 
 // Range of travel is lever length * flex_a
 xy_lever = 10;
@@ -53,4 +57,7 @@ platform_z = shelf_z2 + stage[2] + 7;
 fixed_platform_standoff = 10;
 fixed_platform = [50,40,4];
 platform_gap = xy_travel + 1;
-casing_top = shelf_z2 + stage[2] - z_travel; //top of the wall
+casing_top = shelf_z2 + stage[2] - z_travel; // top of the wall
+max_actuator_travel = max(xy_travel*xy_reduction, z_travel*z_reduction); // maximum distance the actuators protrude below the stage
+base_height = stage_height - platform_z; // the base takes up any height not use by the body.
+if(base_height < max_actuator_travel + 4) echo("WARNING: stage_height is too low, base will not compile properly!");
