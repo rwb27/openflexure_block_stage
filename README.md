@@ -9,7 +9,7 @@ This project is a 3D printable design that enables very fine (sub-micron) mechan
 This project is open-source and is released under the CERN open hardware license.  You can buy a kit of the openflexure microscope from [WaterScope](http://www.waterscope.org/).  Currently, only microscope kits are listed, but if you send an email it should be possible to get this stage as a custom order.
 
 ## Printing/building it yourself
-To build the stage, download the [STL files](https://github.com/rwb27/openflexure_block_stage/stl/) and print them.  Don't just print everything from the STL folder,
+To build the stage, download the [STL files](https://github.com/rwb27/openflexure_block_stage/tree/master/stl/) and print them.  Don't just print everything from the STL folder,
 as currently it contains some parts that must be printed multiple times, and other parts
 that are redundant.  The readme in that folder should point you in the right direction.
 
