@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xml" href="docubricks.xsl"?>
 <docubricks>
-  <part id="1371238009">
+  <physical_part id="1371238009">
     <name>Stage Body</name>
     <description>Main body of the stage</description>
     <supplier />
@@ -12,8 +12,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="105601926">
+  </physical_part>
+  <physical_part id="105601926">
     <name>Stage Base</name>
     <description>Base of the stage</description>
     <supplier />
@@ -24,8 +24,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="843845040">
+  </physical_part>
+  <physical_part id="843845040">
     <name>Gear</name>
     <description />
     <supplier />
@@ -36,8 +36,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="489436422">
+  </physical_part>
+  <physical_part id="489436422">
     <name>Elastic band</name>
     <description>Just an eastic band</description>
     <supplier />
@@ -48,8 +48,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="494177967">
+  </physical_part>
+  <physical_part id="494177967">
     <name>30mm M3 Screw (Hex Head)</name>
     <description>A hexagonally headed M3 screw, can be replaced by an m3 screw and a nut.</description>
     <supplier />
@@ -60,8 +60,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="1763113492">
+  </physical_part>
+  <physical_part id="1763113492">
     <name>M3 Nut</name>
     <description />
     <supplier />
@@ -72,8 +72,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="1385713783">
+  </physical_part>
+  <physical_part id="1385713783">
     <name>M3 Washer</name>
     <description />
     <supplier />
@@ -84,8 +84,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="1678734897">
+  </physical_part>
+  <physical_part id="1678734897">
     <name>Super glue</name>
     <description />
     <supplier />
@@ -96,8 +96,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="1078371667">
+  </physical_part>
+  <physical_part id="1078371667">
     <name>Elastic band tool</name>
     <description />
     <supplier />
@@ -108,8 +108,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="688756752">
+  </physical_part>
+  <physical_part id="688756752">
     <name>Stage Platform</name>
     <description>Platform to hold optical components.</description>
     <supplier />
@@ -120,8 +120,8 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
-  <part id="2070895447">
+  </physical_part>
+  <physical_part id="2070895447">
     <name>Small Optics Screws</name>
     <description />
     <supplier />
@@ -132,7 +132,7 @@
     <material_unit>NONE</material_unit>
     <media />
     <manufacturing_instruction />
-  </part>
+  </physical_part>
   <brick id="372140810">
     <name>OpenFlexure Fibre Stage</name>
     <abstract>A 3d printed X-Y-Z translation stage designed for optical fibre alignment.</abstract>
