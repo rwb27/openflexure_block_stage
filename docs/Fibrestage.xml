@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xml" href="docubricks.xsl"?>
+<docubricks>
+  <part id="1371238009">
+    <name>Stage Body</name>
+    <description>Main body of the stage</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="105601926">
+    <name>Stage Base</name>
+    <description>Base of the stage</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="843845040">
+    <name>Gear</name>
+    <description />
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="489436422">
+    <name>Elastic band</name>
+    <description>Just an eastic band</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="494177967">
+    <name>30mm M3 Screw (Hex Head)</name>
+    <description>A hexagonally headed M3 screw, can be replaced by an m3 screw and a nut.</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="1763113492">
+    <name>M3 Nut</name>
+    <description />
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="1385713783">
+    <name>M3 Washer</name>
+    <description />
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="1678734897">
+    <name>Super glue</name>
+    <description />
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="1078371667">
+    <name>Elastic band tool</name>
+    <description />
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="688756752">
+    <name>Stage Platform</name>
+    <description>Platform to hold optical components.</description>
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <part id="2070895447">
+    <name>Small Optics Screws</name>
+    <description />
+    <supplier />
+    <supplier_part_num />
+    <manufacturer_part_num />
+    <url />
+    <material_amount />
+    <material_unit>NONE</material_unit>
+    <media />
+    <manufacturing_instruction />
+  </part>
+  <brick id="372140810">
+    <name>OpenFlexure Fibre Stage</name>
+    <abstract>A 3d printed X-Y-Z translation stage designed for optical fibre alignment.</abstract>
+    <long_description>~Specs etc. go here~</long_description>
+    <notes>Anything else worth knowing? Inspirations and References as well as hints.</notes>
+    <license>CERN Open Hardware License</license>
+    <media />
+    <assembly_instruction>
+      <step>
+        <description>Print the 3d printed bits and gather the rest.
+
+Note: Elastic bands have a habit of breaking so more than 3 might be needed, especially if it's your first time assembling a stage. The hexagonal headed screws can be replaced by a 30mm M3 screw screwed all the way into a nut.</description>
+        <media>
+          <file url="./Stage Docubricks pic/IMG_20171030_151042.jpg" />
+        </media>
+      </step>
+      <step>
+        <description>Using the printed tool insert an M3 nut into the slot on each leg on the stage body.</description>
+        <media>
+          <file url="./Stage Docubricks pic/IMG_20171030_161313.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171030_161746.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171030_161526.jpg" />
+        </media>
+      </step>
+      <step>
+        <description>The aim of this step is to hook elastic bands onto the hook inside of each leg.
+
+Mount an elastic band on the printed tool, as pictured, and insert an elastic band into the bottom of each leg. Push down on the tool and the band will click into place and if done correctly will remain taut once the tool is removed.
+
+Health warning: This is a deceptively difficult step and takes great patience and resolution, be assured that with experience this step becomes much easier.</description>
+        <media>
+          <file url="./Stage Docubricks pic/IMG_20171030_153813.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171030_154521.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171030_154219.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171030_154249.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171030_155213.jpg" />
+        </media>
+      </step>
+      <step>
+        <description>Screw the screws into the gears and place a washer on the underside of each gear and apply a small amount of lubricant to the screw thread.</description>
+        <media>
+          <file url="./Stage Docubricks pic/IMG_20171031_114917.jpg" />
+        </media>
+      </step>
+      <step>
+        <description>Screw a gear into each leg of the stage.</description>
+        <media>
+          <file url="./Stage Docubricks pic/IMG_20171031_115051.jpg" />
+          <file url="./Stage Docubricks pic/IMG_20171113_155440.jpg" />
+        </media>
+      </step>
+      <step>
+        <description>Attatch the platform to the stage using the small optics screws.</description>
+        <media>
+          <file url="./Stage Docubricks pic/IMG_20171113_155558.jpg" />
+        </media>
+      </step>
+    </assembly_instruction>
+    <author id="1978260633" />
+    <author id="1076583854" />
+    <author id="1420411933" />
+    <function id="1584757221">
+      <description />
+      <implementation type="part" quantity="1" id="1371238009" />
+      <implementation type="part" quantity="1" id="105601926" />
+      <implementation type="part" quantity="3" id="843845040" />
+      <implementation type="part" quantity="3" id="489436422" />
+      <implementation type="part" quantity="3" id="494177967" />
+      <implementation type="part" quantity="3" id="1763113492" />
+      <implementation type="part" quantity="3" id="1385713783" />
+      <implementation type="part" quantity="1" id="1678734897" />
+      <implementation type="part" quantity="1" id="1078371667" />
+      <implementation type="part" quantity="1" id="688756752" />
+      <implementation type="part" quantity="6" id="2070895447" />
+    </function>
+  </brick>
+  <author id="1978260633">
+    <name>Dr Richard Bowman</name>
+    <email>r.w.bowman@bath.ac.uk</email>
+    <orcid />
+    <affiliation>University of Bath</affiliation>
+  </author>
+  <author id="1076583854">
+    <name>Roddy Jaques</name>
+    <email>raj33@bath.ac.uk</email>
+    <orcid />
+    <affiliation>University of Bath</affiliation>
+  </author>
+  <author id="1420411933">
+    <name>Ed Meng</name>
+    <email>qm237@bath.ac.uk</email>
+    <orcid />
+    <affiliation>University of Bath</affiliation>
+  </author>
+</docubricks>
