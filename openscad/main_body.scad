@@ -106,7 +106,7 @@ module main_body(){
     
     // Casing (also provides a lot of the structural integrity)
     casing();
-    fixed_platform();
+    //fixed_platform();
         
     
 }//*/
