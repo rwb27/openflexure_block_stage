@@ -3,25 +3,25 @@
 */
 version_numstring = "0.2.0";
 stage = [37,20,5]; // dimensions of stage part
-beam_height = 75; // height of beam above the table
+beam_height = 85; // height of beam above the table
 stage_height = beam_height - 12.5; //bottom of base to top surface of the stage 
  // NB platform_z sets the distance from bottom of the body to top of the stage
  // stage_height determines the thickness of the base.
 
 // Range of travel is lever length * flex_a
-xy_lever = 10;
-z_lever = 10;
+xy_lever = 20;
+z_lever = 20;
 
 // Mechanical reduction settings
-xy_stage_reduction = 3; //ratio of sample motion to lower shelf motion
-xy_reduction = 5; //mechanical reduction from screw to sample
-z_reduction = 5; //mechanical reduction for Z
+xy_stage_reduction = 30/xy_lever; //ratio of sample motion to lower shelf motion
+xy_reduction = 50/xy_lever; //mechanical reduction from screw to sample
+z_reduction = 50/z_lever; //mechanical reduction for Z
 
 // Motor lugs
 motor_lugs = true;
 
 // Mounting holes
-beam_between_holes = true; //set this to true to add extra mounting holes
+beam_between_holes = false; //set this to true to add extra mounting holes
 
 // Flexure dimensions - good for PLA and ~0.5mm nozzle
 zflex = [6, 1.5, 0.75]; //dimensions of flexure
@@ -58,10 +58,9 @@ z_pushstick_z = shelf_z1 - pw - 2.5; // height of the Z pushstick
 // By default, place 3 mounting holes to align the centre of the stage with a hole.
 // setting beam_between_holes adds another set of holes, putting the beam halfway between
 bolt_spacing = 25; // change to 25.4 for imperial tables
-mounting_bolts_alongholes = [[-1,0,0],[0,-1,0],[1,0,0]]*1.41; //beam aligned with holes
+mounting_bolts_alongholes = [[-1,0,0],[0,-1,0],[1,0,0]]*1.5; //beam aligned with holes
 mounting_bolts_betweenholes = [[-1.25,-0.25,0],[1.25,0.25,0],[-0.25,-1.25,0]]*1.41;
-mounting_bolts = concat(mounting_bolts_alongholes, 
-            beam_between_holes?mounting_bolts_betweenholes:[]) * bolt_spacing;
+mounting_bolts = [[-1.5,0,0],[1.5,0,0],[-1.5,-1,0],[1.5,-1,0]] * bolt_spacing;
             
 platform_z = shelf_z2 + stage[2] + 7;
 fixed_platform_standoff = 10;
