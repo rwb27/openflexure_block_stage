@@ -3,7 +3,16 @@ use <compact_nut_seat.scad>;
 use <fibre_stage_three_legs.scad>;
 include <parameters.scad>;
 
-
+module exterior_brim(r=4, h=0.2){
+    // Add a "brim" around the outside of an object *only*, preserving holes in the object
+    children();
+    
+    linear_extrude(h) difference(){
+        offset(r) projection(cut=true) translate([0,0,-d]) children();
+       
+        offset(-r) offset(r) projection(cut=true) translate([0,0,-d]) children();
+    }
+}
 module z_base(){
     // Trapezoid that forms the base of the Z stage
     t = xy_bottom_travel;
@@ -111,4 +120,4 @@ module main_body(){
     
 }//*/
 
-main_body();
+exterior_brim() main_body();
