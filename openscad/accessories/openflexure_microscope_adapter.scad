@@ -33,6 +33,37 @@ module optics_to_platform(){
     }
 }
 
+module plate_with_keel(t=3, l=12){
+    // A plate that sits on top of the fixed/moving platforms of the stage.
+    keel = [3-0.3,1,l];
+    union(){
+        translate([-16,0,0]) cube([32,t+d,l]);
+        translate([-keel[0]/2,-keel[1],0]) cube(keel+[0,d,0]);
+    }
+}
+
+module rms_to_platform(){
+    l=15;
+    rms_r = 25.4*0.8/2-0.25; //see the openflexure microscope module
+    pitch=0.7056;
+    hole_r = rms_r - 0.44;
+    outer_r = hole_r + 1.2;
+    
+    // First, the bit that fixes to the stage
+    plate_with_keel(l=l);
+    
+    // Then, a place to put the thread
+    difference(){
+        hull(){
+            translate([-outer_r,d,0]) cube([2*outer_r,d,l]);
+            cylinder(r=outer_r, h=l);
+        }
+        cylinder(r=hole_r, h=999, center=true);
+    }
+    inner_thread(radius=rms_r,threads_per_mm=pitch,thread_base_width = 0.60,thread_length=5);
+}
+rms_to_platform();
+
 module disc_to_platform(){
     h=12;
     id=25.4;
@@ -106,4 +137,4 @@ module inch_disc_holder(){
 //    cylinder(d=23,h=8);
 //    cylinder(d=10,h=999,center=true);
 //}
-optics_to_platform();
+//optics_to_platform();
