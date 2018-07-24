@@ -6,12 +6,13 @@ An adapter to fit an 11mm diameter laser diode module to the stage
 
 */
 
-use <utilities.scad>;
+use <../utilities.scad>;
 use <cylinder_clamp.scad>;
+include <../parameters.scad>;
 
 hole_sep = 40;
 hole_d = 3.5;
-beam_h = 12.7;
+beam_h = stage_to_beam_h;
 d = 0.05;
 
 w = hole_sep + hole_d + 4;

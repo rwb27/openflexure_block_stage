@@ -8,11 +8,12 @@ TODO: locate the SCAD source file for the vertical slide clips!
 
 */
 
-use <utilities.scad>;
+use <../utilities.scad>;
+include <../parameters.scad>;
 
 hole_sep = 40;
 hole_d = 3.5;
-beam_h = 12.7;
+beam_h = stage_to_beam_height;
 d = 0.05;
 
 w = hole_sep + hole_d + 4;

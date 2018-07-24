@@ -23,7 +23,7 @@ z_reduction = 50/z_lever; //mechanical reduction for Z
 motor_lugs = true;
 
 // Mounting holes
-beam_between_holes = true; //set this to true to add extra mounting holes
+breadboard_lugs="diagonal"; //sets the hole pattern for bolting it down.  See the options below.
 
 // Flexure dimensions - good for PLA and ~0.5mm nozzle
 zflex = [6, 1.5, 0.75]; //dimensions of flexure
@@ -60,11 +60,17 @@ z_pushstick_z = shelf_z1 - pw - 2.5; // height of the Z pushstick
 // By default, place 3 mounting holes to align the centre of the stage with a hole.
 // setting beam_between_holes adds another set of holes, putting the beam halfway between
 bolt_spacing = 25; // change to 25.4 for imperial tables
-mounting_bolts_alongholes = [[-1,0,0],[0,-1,0],[1,0,0]]*1.5; //beam aligned with holes
-mounting_bolts_betweenholes = [[-1.25,-0.25,0],[1.25,0.25,0],[-0.25,-1.25,0]]*1.41;
-//mounting_bolts = [[-1.5,0,0],[1.5,0,0],[-1.5,-1,0],[1.5,-1,0]] * bolt_spacing;
-mounting_bolts = concat(mounting_bolts_alongholes, 
-            beam_between_holes?mounting_bolts_betweenholes:[]) * bolt_spacing;
+mounting_bolts_alongholes = [[-1,0,0],[0,-1,0],[1,0,0]]*1.5*bolt_spacing; //beam aligned with holes
+mounting_bolts_betweenholes = [[-1.25,-0.25,0],[1.25,0.25,0],[-0.25,-1.25,0]]*1.41*bolt_spacing;
+mounting_bolts_atsides = [[-1.5,0,0],[1.5,0,0],[-1.5,-1,0],[1.5,-1,0]] * bolt_spacing;
+mounting_bolts_diagonal = concat(mounting_bolts_alongholes, 
+                                 mounting_bolts_betweenholes);
+// I hope you'll excuse the stacked ternaries, this is an unpleasant necessity :(
+mounting_bolts = breadboard_lugs=="atsides"?mounting_bolts_sides:
+                 breadboard_lugs=="diagonal"?mounting_bolts_diagonal:
+                 breadboard_lugs=="alongholes"?mounting_bolts_alongholes:
+                 breadboard_lugs=="betweenholes"?mounting_bolts_betweenholes:
+                 /*breadboard_lugs=="none"?*/[];
             
 platform_z = shelf_z2 + stage[2] + 7; // The platform is a fixed height above the moving stage
 fixed_platform_standoff = 10;

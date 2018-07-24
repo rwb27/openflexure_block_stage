@@ -119,5 +119,5 @@ module main_body(){
         
     
 }//*/
-
+brim_r=3;
 exterior_brim(r=brim_r) main_body();
