@@ -7,7 +7,7 @@ module exterior_brim(r=4, h=0.2){
     // Add a "brim" around the outside of an object *only*, preserving holes in the object
     children();
     
-    linear_extrude(h) difference(){
+    if(r>0) linear_extrude(h) difference(){
         offset(r) projection(cut=true) translate([0,0,-d]) children();
        
         offset(-r) offset(r) projection(cut=true) translate([0,0,-d]) children();
@@ -120,4 +120,4 @@ module main_body(){
     
 }//*/
 
-exterior_brim() main_body();
+exterior_brim(r=brim_r) main_body();
