@@ -39,8 +39,8 @@ rms_mount_hole_spacing = 18;
 module each_rms_mounting_hole(){
     for(a=[0,90,180,270]) rotate(a) translate([1,1,0]*rms_mount_hole_spacing/2) children();
 }    
-rms_mount_l = 25;
-module rms_to_platform(mounting_holes=false, l=rms_mount_l){
+
+module rms_to_platform(mounting_holes=true, l=15){
     // A mount for an RMS objective that screws to the fixed/moving plate.
     // l is the length of the mount
     rms_r = 25.4*0.8/2-0.25; //see the openflexure microscope module
@@ -79,7 +79,7 @@ module microscope_to_rms_mount_holes(top_z){
     }
 }
 
-module openflexure_microscope_module(rms_mount_l=rms_mount_l){
+module openflexure_microscope_module(rms_mount_l=15){
     // a cut down optics module that bolts to the RMS mount above
     // this is useful for observing the motion of the stage.
     top_z = 65-35-rms_mount_l;

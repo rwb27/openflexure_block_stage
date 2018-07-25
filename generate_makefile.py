@@ -47,7 +47,7 @@ body_versions = {
         "beam_height":85,
         "xy_lever":20,
         "z_lever":20,
-        "breadboard_lugs":"diagonal",
+        "breadboard_lugs":"atsides",
         "fixed_stage":False,
         },
     }
@@ -55,7 +55,7 @@ body_versions = {
 accessory_versions = {
     "CPS532_to_top_plate":{},
     "LED_to_top_plate":{},
-    "rms_to_platform":{},
+    "rms_to_top_plate":{},
     "microscope_module":{},
     }
     
@@ -100,8 +100,8 @@ if __name__ == "__main__":
             M("$(OUTPUT)/base_" + version + ".stl: $(SOURCE)/base.scad $(main_body_deps)")
             M(openscad_recipe(**parameters))
         M("")
-        #M("$(OUTPUT)/actuator_assembly_tools.stl: $(SOURCE)/actuator_assembly_tools.scad")
-        #M(openscad_recipe(foot_height=26))
+        M("$(OUTPUT)/actuator_assembly_tools.stl: $(SOURCE)/actuator_assembly_tools.scad")
+        M(openscad_recipe(foot_height=26))
         M("")
         for version, parameters in accessory_versions.items():
             M("$(OUTPUT)/accessories/" + version + ".stl: $(SOURCE)/accessories/" + version + ".scad")

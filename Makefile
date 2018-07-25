@@ -8,7 +8,7 @@ OUTPUT = builds
 BODIES := main_body_micromanipulator_2mm main_body_fibre_stage_1mm
 BASES := base_micromanipulator_2mm base_fibre_stage_1mm
 TOOLS := actuator_assembly_tools
-ACCESSORIES := accessories/LED_to_top_plate accessories/rms_to_platform accessories/CPS532_to_top_plate accessories/microscope_module
+ACCESSORIES := accessories/LED_to_top_plate accessories/rms_to_top_plate accessories/CPS532_to_top_plate accessories/microscope_module
 COMMONPARTS := gears small_gears moving_platform
 ALLPARTS := $(COMMONPARTS) $(TOOLS) $(BODIES) $(BASES) $(ACCESSORIES)
 ALLSTLFILES := $(ALLPARTS:%=$(OUTPUT)/%.stl)
@@ -46,7 +46,7 @@ $(OUTPUT)/base_fibre_stage_1mm.stl: $(SOURCE)/base.scad $(main_body_deps)
 $(OUTPUT)/accessories/LED_to_top_plate.stl: $(SOURCE)/accessories/LED_to_top_plate.scad
 	openscad -o $@ $<
 
-$(OUTPUT)/accessories/rms_to_platform.stl: $(SOURCE)/accessories/rms_to_platform.scad
+$(OUTPUT)/accessories/rms_to_top_plate.stl: $(SOURCE)/accessories/rms_to_top_plate.scad
 	openscad -o $@ $<
 
 $(OUTPUT)/accessories/CPS532_to_top_plate.stl: $(SOURCE)/accessories/CPS532_to_top_plate.scad
