@@ -28,11 +28,11 @@ $(OUTPUT)/%.stl: $(all_deps)
 main_body_dep_names := compact_nut_seat fibre_stage_three_legs
 main_body_deps := $(main_body_dep_names:%=$(SOURCE)/%.scad)
 $(OUTPUT)/main_body_micromanipulator_2mm.stl: $(SOURCE)/main_body.scad $(main_body_deps)
-	openscad -o $@ -D 'xy_lever=20' -D 'z_lever=20' -D 'beam_height=85' -D 'fixed_stage=false' -D 'breadboard_lugs="diagonal"' $<
+	openscad -o $@ -D 'xy_lever=20' -D 'z_lever=20' -D 'beam_height=85' -D 'fixed_stage=false' -D 'breadboard_lugs="atsides"' $<
 
  
 $(OUTPUT)/base_micromanipulator_2mm.stl: $(SOURCE)/base.scad $(main_body_deps)
-	openscad -o $@ -D 'xy_lever=20' -D 'z_lever=20' -D 'beam_height=85' -D 'fixed_stage=false' -D 'breadboard_lugs="diagonal"' $<
+	openscad -o $@ -D 'xy_lever=20' -D 'z_lever=20' -D 'beam_height=85' -D 'fixed_stage=false' -D 'breadboard_lugs="atsides"' $<
 
 $(OUTPUT)/main_body_fibre_stage_1mm.stl: $(SOURCE)/main_body.scad $(main_body_deps)
 	openscad -o $@ -D 'xy_lever=10' -D 'z_lever=10' -D 'beam_height=75' -D 'fixed_stage=true' -D 'breadboard_lugs="diagonal"' $<
@@ -41,6 +41,9 @@ $(OUTPUT)/main_body_fibre_stage_1mm.stl: $(SOURCE)/main_body.scad $(main_body_de
 $(OUTPUT)/base_fibre_stage_1mm.stl: $(SOURCE)/base.scad $(main_body_deps)
 	openscad -o $@ -D 'xy_lever=10' -D 'z_lever=10' -D 'beam_height=75' -D 'fixed_stage=true' -D 'breadboard_lugs="diagonal"' $<
 
+
+$(OUTPUT)/actuator_assembly_tools.stl: $(SOURCE)/actuator_assembly_tools.scad
+	openscad -o $@ -D 'foot_height=26' $<
 
 
 $(OUTPUT)/accessories/LED_to_top_plate.stl: $(SOURCE)/accessories/LED_to_top_plate.scad

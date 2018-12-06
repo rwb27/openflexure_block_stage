@@ -22,6 +22,9 @@ z_reduction = 50/z_lever; //mechanical reduction for Z
 // Motor lugs
 motor_lugs = true;
 
+// fixed platform for fibre launch
+fixed_platform = false;
+
 // Mounting holes
 breadboard_lugs="diagonal"; //sets the hole pattern for bolting it down.  See the options below.
 

@@ -115,9 +115,9 @@ module main_body(){
     
     // Casing (also provides a lot of the structural integrity)
     casing();
-    //fixed_platform();
+    if(fixed_platform) fixed_platform();
         
     
 }//*/
-brim_r=3;
+brim_r=0;
 exterior_brim(r=brim_r) main_body();
