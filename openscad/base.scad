@@ -3,6 +3,51 @@ use <compact_nut_seat.scad>;
 use <fibre_stage_three_legs.scad>;
 include <parameters.scad>;
 
+// nicked from feet.scad in the microscope repo
+// TODO: split the feet off the base for ease of assembly
+
+module skew_flat(tilt, shift=false){
+    // This transformation skews a plane so it's parallel to the print bed, in
+    // the foot (which has been rotated by an angle `tilt`).  Z coordinates are
+    // unchanged by this transform; it's a skew **not** a rotation.
+    // if shift is true, move things up so that z=0 corresponds to the print
+    // bed.  Otherwise, z=0 is below the bottom of the foot (because z=0 is
+    // touched by the edge of the foot in the unskewed frame - and the skew will
+    // move that side of the model downwards.  It's all because we rotate the
+    // model about the corner, rather than the centre...
+    l = ss_outer()[1];
+    multmatrix([[1,0,0,0],
+                [0,1,0,0],
+                [0,tan(-tilt),1,shift ? l/2*tan(tilt) : 0],
+                [0,0,0,1]]) children();
+}
+module rx(){
+    //handy shorthand for reflecting in X
+    reflect([1,0,0]) children();
+}
+
+module filleted_bridge(gap, roc_xy=2, roc_xz=2){
+    // This can be subtracted from a structure of width gap[0] to form
+    // a hole in the bottom of the object with rounded edges.
+    // It's used here to smooth the band anchor to avoid damaging the bands.
+    w = gap[0];
+    b = gap[1];
+    h = gap[2];
+    x1 = w/2 - roc_xy;
+    x2 = w/2 - roc_xz;
+    y1 = b/2 + roc_xy;
+    difference(){
+        translate(-zeroz(gap)/2 -[0,roc_xy,999]) cube(gap + [0,2*roc_xy,roc_xz] + [0,0,999]);
+        reflect([0,1,0]) sequential_hull(){
+            rx() translate([x1, y1, -999]) cylinder(r=roc_xy, h=d);
+            rx() translate([x1, y1, 0]) cylinder(r=roc_xy, h=h+roc_xz);
+            rx() translate([x2, b/2, h+roc_xz]) rotate([-90,0,0]) cylinder(r=roc_xz, h=d);
+            rx() translate([x2, -2*d, h+roc_xz]) rotate([90,0,0]) cylinder(r=roc_xz ,h=d);
+        }
+    }
+}
+// end of stuff nicked from the microscope repo
+
 module base(h=base_height){
     // This isn't beautiful, but lifts the mechanism off the floor and anchors elastic bands
     tilt = -asin(xy_stage_reduction/xy_reduction); // X/Y actuators are not vertical

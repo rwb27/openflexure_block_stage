@@ -76,7 +76,7 @@ module nut_from_bottom(d,h=-1,fudge=1.2,shaft=true,chamfer_r=0.75,chamfer_h=0.75
 }
 //nut_from_bottom(4,chamfer_h=4,h=7);
 
-module nut_y(d,h=-1,center=false,fudge=1.15,extra_height=0.7,shaft=false,top_access=false){ //make a nut, for metric bolt of nominal diameter d
+module nut_y(d,h=-1,center=false,fudge=1.15,extra_height=0.7,shaft=false,shaft_length=0,top_access=false){ //make a nut, for metric bolt of nominal diameter d
 	//d: nominal bolt diameter (e.g. 3 for M3)
 	//h: height of nut
 	//center: works as for cylinder
@@ -88,8 +88,9 @@ module nut_y(d,h=-1,center=false,fudge=1.15,extra_height=0.7,shaft=false,top_acc
     union(){
 		rotate([-90,top_access?30:0,0]) cylinder(h=h,center=center,r=r,$fn=6);
 		translate([-r*sin(30),center?-h/2:0,0]) cube([2*r*sin(30),h,r*cos(30)+extra_height]);
-		if(shaft){
-			translate([0,h/2,0]) reflect([0,1,0]) cylinder_with_45deg_top(h=999999,r=d/2*1.05*fudge,$fn=16,extra_height=extra_height); 
+		if(shaft || shaft_length > 0){
+            sl = shaft_length >0 ? shaft_length : 9999;
+			translate([0,h/2,0]) reflect([0,1,0]) cylinder_with_45deg_top(h=sl,r=d/2*1.05*fudge,$fn=16,extra_height=extra_height); 
 			//the reason I reflect rather than use center=true is that the latter 
 			//fails in fast preview mode (I guess because of the lack of points 
 			//inside the nut).
@@ -142,6 +143,15 @@ module chamfered_hole(r=10, h=10, chamfer=1,center=false){
 module unrotate(rotation){
 	//undo a previous rotation, NB this is NOT the same as rotate(-rotation) due to ordering.
 	rotate([0,0,-rotation[2]]) rotate([0,-rotation[1],0]) rotate([-rotation[0],0,0]) children();
+}
+
+module smatrix(xx=1,yy=1,zz=1,xy=0,xz=0,yx=0,yz=0,zx=0,zy=0, xt=0, yt=0, zt=0){
+    //apply a matrix transformation, specifying the matrix sparsely
+    //this is useful because most helpful matrices are close to the identity.
+    multmatrix([[xx, xy, xz, xt],
+                [yx, yy, yz, yt],
+                [zx, zy, zz, zt],
+                [0,  0,  0,  1]]) children();
 }
 
 module support(size, height, baseheight=0, rotation=[0,0,0], supportangle=45, outline=false){
@@ -270,9 +280,60 @@ module lighttrap_cylinder(r1,r2,h,ridge=1.5){
 					h=cone_h+2*d);
     }
 }
+module lighttrap_sqylinder(r1,f1,r2,f2,h,ridge=1.5){
+    //A "cylinder" made up of christmas-tree-like cones
+    //good for trapping light in an optical path
+    //r1 is the outer radius of the bottom
+    //f1 is the outer flat length of the bottom (f1=0 makes the bottom circular)
+    //r2 is the inner radius of the top
+    //f2 is the inner flat length of the top (f2=0 makes it circular)
+    //NB for a straight-sided cylinder, r2==r1-ridge
+    //Also, the ridges are made by varying r, not f.  This means there's a minimum r1
+    //which is the value of ridge.
+    n_cones = floor(h/ridge);
+    cone_h = h/n_cones;
+    
+	for(i = [0 : n_cones - 1]){
+        p = i/(n_cones - 1);
+		translate([0, 0, i * cone_h - d]) 
+			minkowski(){
+                cylinder(r1=(1-p)*r1 + p*(r2+ridge),
+					r2=(1-p)*(r1-ridge) + p*r2,
+					h=cone_h);
+                cube([1,1,0]*((1-p)*f1 + p*f2) + [0,0,2*d], center=true);
+            }
+    }
+}
+
+
+module add_hull_base(h=1){
+    // Take the convex hull of some objects, and add it in as a
+    // thin layer at the bottom
+    union(){
+        intersection(){
+            hull() children();
+            cylinder(r=9999,$fn=8,h=h); //make the base thin
+        }
+        children();
+    }
+}
+module add_roof(inner_h){
+    // Take the convex hull of some objects, and add the top
+    // of it as a roof.  NB you must specify the height of
+    // the underside of the roof - finding it automatically
+    // would be too much work...
+    union(){
+        difference(){
+            hull() children();
+            cylinder(r=9999,$fn=8,h=inner_h);
+        }
+        children();
+    }
+}
 
 module trylinder(r=1, flat=1, h=d, center=false){
     //Halfway between a cylinder and a triangle.
+    //NB the largest cylinder that fits inside it has r=r+f/(2*sqrt(3))
     hull() for(a=[0,120,240]) rotate(a)
         translate([0,flat/sqrt(3),0]) cylinder(r=r, h=h, center=center);
 }
@@ -306,7 +367,63 @@ module trylinder_gripper(inner_r=10,h=6,grip_h=3.5,base_r=-1,t=0.65,squeeze=1,fl
         }
     }
 }
-trylinder_gripper();
+
+module deformable_hole_trylinder(r1, r2, h=99, corner_roc=-1, dz=0.5, center=false){
+    // A cylinder with feathered edges, to make a hole that is
+    // slightly deformable, in an otherwise rigid structure.
+    // r1: inner radius
+    // r2: outer radius
+    // h, center: as for cylinder
+    // corner_roc: radius of curvature of the trylinder
+    // dz: thickness of layers
+    n = floor(h/(2*dz)); //number of layers in the structure
+    flat_l = 2*sqrt(r2*r2 - r1*r1);
+    corner_roc = corner_roc < 0 ? r1 - flat_l/(2*sqrt(3)) : corner_roc;
+    repeat([0,0,2*dz], n, center=center) union(){
+        cylinder(r=r2, h=dz+d);
+        translate([0,0,center ? -dz : dz]) trylinder(r=corner_roc, flat=flat_l, h=dz+d);
+    }
+}
+module self_tap_hole(mean_r, h, dr=1, dz=0.5, bridge_facets=0, center=false, screw=true){
+    // A cylinder with bridges around the edges, aiming to make
+    // a hole with nicely feathered edges.
+    // mean_r is the radius of the thing you're inserting.  The
+    // "hard" edge of the hole will be mean_r + dr/2 and the "soft"
+    // inner edge will be at mean_r - dr/2;
+    // bridge_facets determines the number of bridges used - can be
+    // safely left at the default value.
+    // center has the same meaning as in cylinder.
+    inner_r = mean_r - dr/2;
+    outer_r = mean_r + dr/2;
+    bridge_facets = bridge_facets > 0 ? bridge_facets : floor(180/acos(inner_r/outer_r)); //sensible default for number of bridges
+    difference(){
+        cylinder(r=outer_r, h=h, center=center);
+        
+        repeat([0,0,2*dz], ceil(h/dz/2), center=center) for(i=[1:bridge_facets]){
+            rotate(i*360/bridge_facets) translate([-999,inner_r,screw ? i/bridge_facets*2*dz : 0]) cube([999*2,999,dz]);
+        }
+    }
+}
+
+            
+        
+difference(){
+    cylinder(r=16, h=5);
+    self_tap_hole(20.4/2, dr=1.2, dz=0.7055/2, h=11, center=true, bridge_facets=5);
+}
+
+module exterior_brim(r=4, h=0.2){
+    // Add a "brim" around the outside of an object *only*, preserving holes in the object
+    children();
+    
+    linear_extrude(h) difference(){
+        offset(r) projection(cut=true) translate([0,0,-d]) children();
+       
+        offset(-r) offset(r) projection(cut=true) translate([0,0,-d]) children();
+    }
+}
+
+//trylinder_gripper();
 //feather_vertical_edges(fin_r=1){
 //	cylinder(r=12,h=10);
 //}

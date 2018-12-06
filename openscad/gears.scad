@@ -27,6 +27,11 @@ c2c_distance = 20; //see output from motor_lugs
 pitch = c2c_distance * 360 / (teeth_smallgear + teeth_biggear);
 d=0.05;
 
+function gear_c2c_distance() = c2c_distance;
+function gear_ratio() = ratio;
+function small_gear_spacing() = c2c_distance/(ratio + 1)*2 + 4;
+function large_gear_spacing() = c2c_distance/(1/ratio + 1)*2 + 4;
+
 //pitch radius = Nteeth * circular_pitch / 360
 //pitch radius is centre of gear to meshing point
 //outer radius = pitch radius * (1 + 2*pi/Nteeth)
@@ -87,8 +92,6 @@ module small_gear(){
 }
 
 
-rotate(360/teeth_biggear/2) large_gear();
-//translate([c2c_distance*2,00]) small_gear();
 
 module thumbwheel(r=10,h=5,knobble_r=1,knobble_angle=45,chamfer=0.5){
     knobble_length=knobble_r * sin(knobble_angle) * 2;
@@ -107,4 +110,33 @@ module thumbwheel(r=10,h=5,knobble_r=1,knobble_angle=45,chamfer=0.5){
         translate([0,0,1.5]) nut(3,shaft=true,fudge=1.2,h=999);
     }
 }
+
+module motor_clearance(h=15){
+    // an approximate cut-out for a 28BYJ-48 stepper motor
+    // NB does not include cable clearance, I assume that goes on the outside.
+    // The centre of the body is at the origin, NB this is NOT the shaft location.
+    // The shaft is not included.
+    linear_extrude(h=h){
+        circle(r=14+1.5);
+        hull() reflect([1,0]) translate([35/2,0]) circle(r=4.5);
+    }
+    reflect([1,0,0]) translate([35/2,0,0]) cylinder(r=1.9,h=20,center=true);
+}
+
+module motor_and_gear_clearance(gear_h=10, h=999){
+    // clearance for the small gear, large gear, and motor.
+    // It's positioned with the centre of the large gear at the origin.
+    // NB gear_h should match the height of the motor lugs above the
+    // flat surface for the large gear, in motor_lugs in compact_nut_seat.scad.
+    linear_extrude(h) offset(1.5) hull() {
+        projection() large_gear();
+        translate([0,c2c_distance]) projection() small_gear();
+    }
+    translate([0,c2c_distance-7.8,gear_h]) motor_clearance(h=h-gear_h);
+}
+
+//rotate(360/teeth_biggear/2) large_gear();
+//translate([c2c_distance*2,00]) small_gear();
 //thumbwheel();
+//motor_and_gear_clearance();
+repeat([0,large_gear_spacing(),0],3,center=true) large_gear();

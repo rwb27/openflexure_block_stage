@@ -11,3 +11,6 @@ openscad/*.stl
 
 # Ignore zip files in the documentation dir
 docs/*.zip
+
+# Ignore build files
+/builds/

@@ -26,47 +26,6 @@ function column_core_size() = column_core;
 function nut_slot_size() = nut_slot;
 function ss_outer(h=-2) = column_core + [wall_t*2,wall_t*2,(h+2)*2];
 
-module skew_flat(tilt, shift=false){
-    // This transformation skews a plane so it's parallel to the print bed, in
-    // the foot (which has been rotated by an angle `tilt`).  Z coordinates are
-    // unchanged by this transform; it's a skew **not** a rotation.
-    // if shift is true, move things up so that z=0 corresponds to the print
-    // bed.  Otherwise, z=0 is below the bottom of the foot (because z=0 is
-    // touched by the edge of the foot in the unskewed frame - and the skew will
-    // move that side of the model downwards.  It's all because we rotate the
-    // model about the corner, rather than the centre...
-    l = ss_outer()[1];
-    multmatrix([[1,0,0,0],
-                [0,1,0,0],
-                [0,tan(-tilt),1,shift ? l/2*tan(tilt) : 0],
-                [0,0,0,1]]) children();
-}
-module rx(){
-    //handy shorthand for reflecting in X
-    reflect([1,0,0]) children();
-}
-
-module filleted_bridge(gap, roc_xy=2, roc_xz=2){
-    // This can be subtracted from a structure of width gap[0] to form
-    // a hole in the bottom of the object with rounded edges.
-    // It's used here to smooth the band anchor to avoid damaging the bands.
-    w = gap[0];
-    b = gap[1];
-    h = gap[2];
-    x1 = w/2 - roc_xy;
-    x2 = w/2 - roc_xz;
-    y1 = b/2 + roc_xy;
-    difference(){
-        translate(-zeroz(gap)/2 -[0,roc_xy,999]) cube(gap + [0,2*roc_xy,roc_xz] + [0,0,999]);
-        reflect([0,1,0]) sequential_hull(){
-            rx() translate([x1, y1, -999]) cylinder(r=roc_xy, h=d);
-            rx() translate([x1, y1, 0]) cylinder(r=roc_xy, h=h+roc_xz);
-            rx() translate([x2, b/2, h+roc_xz]) rotate([-90,0,0]) cylinder(r=roc_xz, h=d);
-            rx() translate([x2, -2*d, h+roc_xz]) rotate([90,0,0]) cylinder(r=roc_xz ,h=d);
-        }
-    }
-}
-
 module nut_trap_and_slot(r, slot, squeeze=0.9, trap_h=-1){
     // A cut-out that will hold a nut.  The nut slots in horizontally
     // along the +y axis, and is pulled up and into the tight part of the
@@ -96,7 +55,7 @@ module nut_trap_and_slot(r, slot, squeeze=0.9, trap_h=-1){
         
 }
 
-module actuator_column(h, tilt=0, lever_tip=3, flip_nut_slot=false, join_to_casing=false, no_voids=false){
+module actuator_column(h, tilt=0, lever_tip=3, flip_nut_slot=false, join_to_casing=true, no_voids=false){
     // An "actuator column", a nearly-vertical tower, with a nut trap and hooks
     // for elastic bands at the top, usually attached to a flexure at the bottom.
     // There's often one of these inside the casing under an adjustment screw/gear
@@ -239,33 +198,33 @@ module motor_lugs(h=20, tilt=0, angle=0){
     }
 }
 
-module screw_seat(h=25, travel=5, entry_w=2*column_base_r+3, extra_entry_h=7, motor_lugs=false, lug_angle=0){
+module screw_seat(h=25, travel=5, tilt=0, entry_w=2*column_base_r+3, extra_entry_h=7, motor_lugs=false, lug_angle=0){
     // This forms a hollow column, usually built around an actuator_column to
     // support the screw (see screw_seat_shell)
-    tilt = 0; //currently, only vertical ones are supported.
     entry_h = extra_entry_h + travel; //ensure the actuator can move
     difference(){
         union(){
-            screw_seat_shell(h=h + travel);
-            if(motor_lugs) rotate(180) motor_lugs(h=h + travel, angle=lug_angle);
+            screw_seat_shell(h=h + travel, tilt=tilt);
+            if(motor_lugs) rotate(180) motor_lugs(h=h + travel, angle=lug_angle, tilt=-tilt);
         }
-        nut_seat_void(h=h + travel); //hollow out the inside
+        nut_seat_void(h=h + travel, tilt=tilt); //hollow out the inside
         
         edge_y = ss_outer(h)[1]/2; //allow the actuator to poke in
-        translate([0,-edge_y,0]) cube([entry_w, edge_y, entry_h*2], center=true);
+        smatrix(zy=sin(tilt)) translate([0,-edge_y,0]) 
+                    cube([entry_w, edge_y, entry_h*2], center=true);
         
         //entrance slot for nut
         rotate([tilt,0,0]) translate([0,0,h-nut_size-1.5-nut_slot[2]]) nut_trap_and_slot(nut_size, nut_slot + [0,0,0.3]);
     }
 }
 
-module screw_seat_outline(h=999,adjustment=0,center=false){
+module screw_seat_outline(h=999,adjustment=0,center=false,tilt=0){
     // The bottom of a screw seat
     //w = ss_outer()[0];
     //l = ss_outer()[1];
     //a = adjustment;
 	//resize([w+a, l+a, h]) cylinder(r=20, h=h, center=center);
-    linear_extrude(h,center=center) nut_seat_silhouette(offset=adjustment); //offset(adjustment) projection(cut=true) translate([0,0,-1]) screw_seat_shell();
+    rotate([tilt,0,0]) linear_extrude(h,center=center) nut_seat_silhouette(offset=adjustment); //offset(adjustment) projection(cut=true) translate([0,0,-1]) screw_seat_shell();
 }
 
 
@@ -422,7 +381,7 @@ translate([40,0,0]){
 //    tilted_actuator(25,25,50, base_w=6);
 }
 //echo(nut_slot);
-//
+/*/
 difference(){
     union(){
         screw_seat(25, motor_lugs=true);
@@ -436,6 +395,7 @@ difference(){
     }
     translate([0,0,2.5]) rotate([180,0,0]) cylinder(r=999,h=999,$fn=4);
 }//*/
+nut_seat_void(99, tilt=30, center=true); // space inside the column
 
 /*/ TEST PIECE: different sized nut slots, 3% different in size
 difference(){
