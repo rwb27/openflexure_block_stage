@@ -334,8 +334,18 @@ module add_roof(inner_h){
 module trylinder(r=1, flat=1, h=d, center=false){
     //Halfway between a cylinder and a triangle.
     //NB the largest cylinder that fits inside it has r=r+f/(2*sqrt(3))
+    //A passable "self tapping hole" sets 
     hull() for(a=[0,120,240]) rotate(a)
         translate([0,flat/sqrt(3),0]) cylinder(r=r, h=h, center=center);
+}
+module trylinder_selftap(nominal_d=3, h=10, center=false){
+    // Make a trylinder that you can self-tap a machine screw into.
+    // The size is deliberately a bit big for small holes, so that
+    // it compensates for splodgy printing
+    r = max(nominal_d*0.8/2 + 0.2, nominal_d/2 - 0.2);
+    dr = 0.5;
+    flat = dr * 2 * sqrt(3);
+    trylinder(r=r - dr, flat=flat, h=h, center=center);
 }
 module trylinder_gripper(inner_r=10,h=6,grip_h=3.5,base_r=-1,t=0.65,squeeze=1,flare=0.8,solid=false){
     // This creates a tapering, distorted hollow cylinder suitable for
