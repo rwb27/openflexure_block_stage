@@ -79,17 +79,21 @@ module microscope_to_rms_mount_holes(top_z){
     }
 }
 
-module openflexure_microscope_module(rms_mount_l=15){
+module openflexure_microscope_module(rms_mount_l=15, infinite_conjugates=false){
     // a cut down optics module that bolts to the RMS mount above
     // this is useful for observing the motion of the stage.
-    top_z = 65-35-rms_mount_l;
+    top_z = infinite_conjugates ? 65-35-10 : 65-35-rms_mount_l;
     outer_r = rms_mount_hole_spacing/sqrt(2)+3;
     inner_r = 18; // this should be small enough to fit inside the RMS thread but
                   // big enough to clear the inner lens mount.
     difference(){
         // Start with an optics module:
-        import("optics_module_rms_f50d13_nodovetail.stl");
-        
+        if(infinite_conjugates){
+            import("optics_module_rms_f50d13_infiniteconjugates.stl");
+        }else{
+            import("optics_module_rms_f50d13_nodovetail.stl");
+        }
+            
         // Chop off the built-in RMS objective mount
         translate([0,0,top_z]) difference(){
             cylinder(r=999,h=999,$fn=3);
