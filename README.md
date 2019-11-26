@@ -1,3 +1,6 @@
+# This repository has moved!
+Please head to our new home on Gitlab: https://gitlab.com/openflexure/openflexure-block-stage/
+
 # OpenFlexure Block Stage
 A 3D Printable high-precision 3 axis translation stage.
 
